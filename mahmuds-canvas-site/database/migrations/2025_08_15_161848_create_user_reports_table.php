@@ -1,0 +1,35 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('user_reports', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('type'); // spam, inappropriate, copyright, other
+            $table->string('subject');
+            $table->text('description');
+            $table->string('reported_url')->nullable();
+            $table->enum('status', ['pending', 'investigating', 'resolved', 'dismissed'])->default('pending');
+            $table->text('admin_response')->nullable();
+            $table->timestamp('resolved_at')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('user_reports');
+    }
+};
